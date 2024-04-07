@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\userResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -51,5 +52,22 @@ class UserController extends Controller
             return response()->json(['status' => '200', 'message' =>"users already exist"]);
         }
         return response()->json($user, 201);
+    }
+
+    public function login(Request $request)
+    {
+        $user = User::where('email',$request->get('email'))->first();
+        if(!$user)
+        {
+            return response()->json(['status' => '404', 'message' => "user not found"]);
+        }
+        else
+        {
+            if (Hash::check($request->get('password'), $user->password)) {
+                return new userResource($user);
+            } else {
+                return response()->json(['status' => '401', 'error' => "invalid credentials"]);
+            }            
+        }
     }
 }

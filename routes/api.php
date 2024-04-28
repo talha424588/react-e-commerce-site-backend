@@ -22,5 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('add-product',[ProductController::class,'addProduct']);
+Route::get('get-all-product',[ProductController::class,'getAllProducts']);
+Route::delete('delete-product/{id}',[ProductController::class,'deleteProduct']);
 Route::post('add-category',[ProductController::class,'addCategory']);
 Route::get('get-all-category',[ProductController::class,'getAllCategories']);

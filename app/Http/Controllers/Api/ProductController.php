@@ -21,7 +21,7 @@ class ProductController extends Controller
             'name' =>'required',
             'price' =>'required',
             'description' =>'required',
-            'category' =>'required',
+            // 'category' =>'required',
             'image' =>'required',
         ]);
         if ($validator->fails()) {
@@ -31,15 +31,13 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->price = $request->price;
         $product->description = $request->description;
-        $product->product_id = $request->product_id;
+        // $product->category = json_encode($request->category);
         $product->image = $request->image;
-        $product->user_id = $request->user_id;
-        if($product->save()){
-            return new productResource($product);
-        }
-        else
-        {
-            return response()->json(['error' => 'Something went wrong'], 401);
+        $product->user_id = $request->userId;
+        if ($product->save()) {
+            return response()->json(new ProductResource($product), 201);
+        } else {
+            return response()->json(['error' => 'Something went wrong'], 500);
         }
     }
 
@@ -79,6 +77,19 @@ class ProductController extends Controller
     public function getAllCategories()
     {
         $category = category::all();
-        return categoryResource::collection($category);
+        return response()->json(['status' => '200', 'message' =>"success", 'category' => $category]);
+    }
+
+    public function getAllProducts()
+    {
+        $product = product::all();
+        return response()->json(['status' => '200', 'message' =>"success", 'product' => $product]);
+    }
+
+    public function deleteProduct($id)
+    {
+        $product = product::findorfail($id);
+        if($product->delete())
+        return response()->json(['status' => 200, 'message' =>"success"]);
     }
 }
